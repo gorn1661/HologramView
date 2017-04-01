@@ -21,6 +21,9 @@ namespace HologramViewOnCameras
         }
         private FilterInfoCollection webcam;
         private VideoCaptureDevice cam;
+        private VideoCaptureDevice cam1;
+        private VideoCaptureDevice cam2;
+        private VideoCaptureDevice cam3;
 
         String[] s;
 
@@ -34,8 +37,46 @@ namespace HologramViewOnCameras
 
         private void button1_Click(object sender, EventArgs e)
         {
-            cam = new VideoCaptureDevice(webcam[comboBox1.SelectedIndex].MonikerString);
-            cam.NewFrame += Cam_NewFrame;cam.Start();
+            if(comboBox1.Items.Count != 4)
+            {
+                cam = new VideoCaptureDevice(webcam[comboBox1.SelectedIndex].MonikerString);
+                cam.NewFrame += Cam_NewFrame;
+                cam.Start();
+            }
+           
+            if(comboBox1.Items.Count == 4)
+            {
+                cam = new VideoCaptureDevice(webcam[0].MonikerString);
+                cam.NewFrame += Cam_NewFrame;
+                cam1 = new VideoCaptureDevice(webcam[1].MonikerString);
+                cam1.NewFrame += Cam1_NewFrame;
+                cam2 = new VideoCaptureDevice(webcam[2].MonikerString);
+                cam2.NewFrame += Cam2_NewFrame;
+                cam3 = new VideoCaptureDevice(webcam[3].MonikerString);
+                cam3.NewFrame += Cam3_NewFrame;
+                cam.Start();
+                cam1.Start();
+                cam2.Start();
+                cam3.Start();
+            }
+        }
+
+        private void Cam3_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+            pictureBox4.Image = bitmap;
+        }
+
+        private void Cam2_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+            pictureBox3.Image = bitmap;
+        }
+
+        private void Cam1_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+            pictureBox2.Image = bitmap;
         }
 
         private void Cam_NewFrame(object sender, NewFrameEventArgs eventArgs)
