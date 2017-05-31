@@ -17,13 +17,13 @@ namespace HologramViewOnCameras
         public Form1()
         {
             InitializeComponent();
-
         }
         private FilterInfoCollection webcam;
         private VideoCaptureDevice cam;
         private VideoCaptureDevice cam1;
         private VideoCaptureDevice cam2;
         private VideoCaptureDevice cam3;
+        //private VideoCaptureDevice vcd;
 
         String[] s;
 
@@ -35,16 +35,49 @@ namespace HologramViewOnCameras
             comboBox1.SelectedIndex = 0;
         }
 
+       /* private void createVideo()
+        {
+            for (int i = 0; i < comboBox1.Items.Count; i++)
+            {
+                vcd = new VideoCaptureDevice(webcam[i].MonikerString);
+                vcd.NewFrame += Cam_NewFrame;
+                vcd.Start();
+            }
+        }*/
+
         private void button1_Click(object sender, EventArgs e)
         {
-            if(comboBox1.Items.Count != 4)
+            if(comboBox1.Items.Count == 1)
             {
-                cam = new VideoCaptureDevice(webcam[comboBox1.SelectedIndex].MonikerString);
+                cam = new VideoCaptureDevice(webcam[0].MonikerString);
                 cam.NewFrame += Cam_NewFrame;
                 cam.Start();
             }
-           
-            if(comboBox1.Items.Count == 4)
+
+            if (comboBox1.Items.Count == 2)
+            {
+                cam = new VideoCaptureDevice(webcam[0].MonikerString);
+                cam.NewFrame += Cam_NewFrame;
+                cam1 = new VideoCaptureDevice(webcam[1].MonikerString);
+                cam1.NewFrame += Cam1_NewFrame;
+                cam.Start();
+                cam1.Start();
+            }
+
+            if (comboBox1.Items.Count == 3)
+            {
+                cam = new VideoCaptureDevice(webcam[0].MonikerString);
+                cam.NewFrame += Cam_NewFrame;
+                cam1 = new VideoCaptureDevice(webcam[1].MonikerString);
+                cam1.NewFrame += Cam1_NewFrame;
+                cam2 = new VideoCaptureDevice(webcam[2].MonikerString);
+                cam2.NewFrame += Cam2_NewFrame;
+                cam.Start();
+                cam1.Start();
+                cam2.Start();
+            }
+
+            if (comboBox1.Items.Count == 4)
             {
                 cam = new VideoCaptureDevice(webcam[0].MonikerString);
                 cam.NewFrame += Cam_NewFrame;
@@ -64,32 +97,42 @@ namespace HologramViewOnCameras
         private void Cam3_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
             Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-            pictureBox4.Image = bitmap;
+            pictureBox4.Image = new Bitmap(bitmap, new Size(pictureBox4.Width, pictureBox4.Height));
         }
 
         private void Cam2_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
             Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-            pictureBox3.Image = bitmap;
+            pictureBox3.Image = new Bitmap(bitmap, new Size(pictureBox3.Width, pictureBox3.Height));
         }
 
         private void Cam1_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
             Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-            pictureBox2.Image = bitmap;
+            pictureBox2.Image = new Bitmap(bitmap, new Size(pictureBox2.Width, pictureBox2.Height));
         }
 
         private void Cam_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
             Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-            pictureBox1.Image = bitmap;
+            pictureBox1.Image = new Bitmap(bitmap, new Size(pictureBox1.Width, pictureBox1.Height));
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (cam.IsRunning)
+            try
             {
-                cam.Stop();
+                if (cam.IsRunning)
+                {
+                    cam.Stop();
+                    cam2.Stop();
+                    cam3.Stop();
+                    cam1.Stop();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
     }
